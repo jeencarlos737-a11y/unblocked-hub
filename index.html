@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unblocked Hub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>🎮 Unblocked Hub</h1>
+    </header>
+
+    <main id="game-grid" class="container"></main>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" id="close-btn">× Close Game</button>
+            <iframe id="game-frame" src="" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        const grid = document.getElementById('game-grid');
+        const modal = document.getElementById('modal');
+        const frame = document.getElementById('game-frame');
+        const closeBtn = document.getElementById('close-btn');
+
+        // Fetch the JSON file
+        async function init() {
+            try {
+                const response = await fetch('./games.json');
+                const games = await response.json();
+                
+                games.forEach(game => {
+                    const card = document.createElement('div');
+                    card.className = 'game-card';
+                    card.innerHTML = `
+                        <img src="${game.thumbnail}" alt="${game.title}">
+                        <h3>${game.title}</h3>
+                    `;
+                    card.onclick = () => {
+                        frame.src = game.url;
+                        modal.style.display = 'flex';
+                    };
+                    grid.appendChild(card);
+                });
+            } catch (e) {
+                grid.innerHTML = `<p>Error loading games. Check your JSON formatting.</p>`;
+            }
+        }
+
+        closeBtn.onclick = () => {
+            modal.style.display = 'none';
+            frame.src = '';
+        };
+
+        init();
+    </script>
+</body>
+</html>
